@@ -1,45 +1,35 @@
 if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
+    require('dotenv').config();
 };
 
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
-const passport = require('passport');
+const PORT = process.env.PORT
 
-//PORT
-const PORT = process.env.PORT;
 
-//ROUTER
-const mainRouter = require('./routes');
+//Router
+const mainRoute = require('./routes');
+
+//errHandler
 const errHandler = require('./middlewares/errHandler');
 
-mongoose.connect(process.env.MONGOOSE_CONNECTION, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+let mongoUri = process.env.MONGO_URI
+mongoose.connect(mongoUri, {useNewUrlParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('Welcome to mongoDB')
+  console.log(`Welcome to ${mongoUri}`)
 });
 
-//APP-USE;
+
+app.use(express.urlencoded({extended: true}));
 app.use(cors());
-app.use(express.urlencoded({extended: false}));
-app.use(passport.initialize());
-
-
-require('./passport')(passport);
-
-
-//Router that used;
-app.use(mainRouter);
-
-//Errhandler;
+app.use(mainRoute);
 app.use(errHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server started on ${PORT}`);
-})
+
+app.listen(PORT, () => console.log(`Server started on ${PORT}`))
+
+

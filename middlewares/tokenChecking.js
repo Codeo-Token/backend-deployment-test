@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../helpers/jwt');
 
 function authentification(req,res,next) {
