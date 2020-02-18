@@ -14,7 +14,6 @@ class UserController {
 
     static create(req,res,next) {
         let { name, email, password, confirm_password } = req.body;
-        console.log(req.body)
         if (confirm_password !== password) {
             next({message: "Confirm Password doesn't match with passowrd"})
         }else {
